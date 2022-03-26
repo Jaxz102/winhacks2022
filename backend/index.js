@@ -19,31 +19,35 @@ const db = admin.firestore()
 const mainKeyDB = db.collection("mainKey")
 
 
+app.use("/projects", require('./routes/projects'))
+
+
+
+
+
+
 app.get("/", (req, res) => { // just to check if backend is running
     return res.send("Backend Running")
 })
 
 // for testing & learning 
 app.post("/nicole", async(req, res) => {
-
     const {name} = req.body
-
     // adding document called name, and its fields into firebase
     await mainKeyDB.doc(name).set({
         testField: "testing text",
         testField2: 123
     })
-
     return res.send(name)
 })
 
-app.post("/createAdmin", asyn(req, res) => {
-    const {docName} = req.body
+// app.post("/createAdmin", asyn(req, res) => {
+//     const {docName} = req.body
 
-    await adminDB.doc(docName).set({
+//     await adminDB.doc(docName).set({
         
-    })
-})
+//     })
+// })
 
 
 
