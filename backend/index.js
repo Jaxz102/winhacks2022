@@ -16,7 +16,9 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 const db = admin.firestore()
-const mainKeyDB = db.collection("mainKey")
+const adminDB = db.collection("admin")
+const volunteerDB = db.collection("volunteers")
+const projectManagerDB = db.collection("projectManagers")
 
 
 app.use("/projects", require('./routes/projects'))
@@ -41,25 +43,84 @@ app.post("/nicole", async(req, res) => {
     return res.send(name)
 })
 
-// app.post("/createAdmin", asyn(req, res) => {
-//     const {docName} = req.body
+app.post("/createAdmin", async(req, res) => {
+    const adminId = v4()
+    const {
+        firstName,
+        lastName
+    } = req.body
 
-//     await adminDB.doc(docName).set({
-        
-//     })
-// })
+    await adminDB.doc(adminId).set({
+        adminId: adminId,
+        firstName: firstName,
+        lastName: lastName
+    })
 
+    return res.send("created admin")
+})
 
+app.post("/createVolunteer", async(req, res) => {
+    const volunteerId = v4()
+    const {
+        firstName,
+        lastName,
+        permissions_dataAnalytics, 
+        permissions_grantWriting, 
+        permissions_graphicDesign, 
+        permissions_literatureReview,
+        permissions_photography,
+        permissions_plainLanguageCommunication,
+        permissions_planningAndOrganizingEvents,
+        permissions_REDCapConsulting,
+        permissions_socialMedia,
+        permissions_videography,
+        permissions_websiteDevelopment,
+        permissions_other
+    } = req.body
 
+    const otherpermissions = ( (permissions_other==="" || permissions_other==null) ? null : permissions_other)
+    
+    await volunteerDB.doc(volunteerId).set({
+        volunteerId: volunteerId,
+        firstName: firstName,
+        lastName: lastName,
+        permissions_dataAnalytics: permissions_dataAnalytics,
+        permissions_grantWriting: permissions_grantWriting, 
+        permissions_graphicDesign: permissions_graphicDesign, 
+        permissions_literatureReview: permissions_literatureReview,
+        permissions_photography: permissions_photography,
+        permissions_plainLanguageCommunication: permissions_plainLanguageCommunication,
+        permissions_planningAndOrganizingEvents: permissions_planningAndOrganizingEvents,
+        permissions_REDCapConsulting: permissions_REDCapConsulting,
+        permissions_socialMedia: permissions_socialMedia,
+        permissions_videography: permissions_videography,
+        permissions_websiteDevelopment: permissions_websiteDevelopment,
+        permissions_other: otherpermissions
+    })
 
+    return res.send("created volunteer")
+})
 
+app.post("/createProjectManager", async(req, res) => {
+    const projectManagerId = v4()
 
+    const{
+        firstName,
+        lastName,
+        email,
+        primaryAffiliation,
+    } = req.body
 
+    await projectManagerDB.doc(projectManagerId).set({
+        projectManagerId: projectManagerId,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        primaryAffiliation: primaryAffiliation
+    })
 
-
-
-
-
+    return res.send("created project manager")
+})
 
 
 
