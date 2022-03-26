@@ -3,15 +3,21 @@
         <h1>{{usertype[user]}} Log In</h1>
         <input type="username" placeholder="Your Username" required>
         <input type="password" placeholder="Password" required>
-        <button @click="login()" :style="{'color': bgcolour[user]}">Log In</button>
+        <button @click="login(user)" :style="{'color': bgcolour[user]}">Log In</button>
     </main>
 </template>
 <script>
 export default {
     name: "Login",
     methods: {
-        login(){
-            this.$router.push("/dashboard/account");
+        login(user){
+            if(user == 0){
+                this.$router.push("/admindashboard");
+            }else if(user == 1){
+                this.$router.push("/pmdashboard");
+            }else if(user == 2){
+                this.$router.push("/voldashboard")
+            }
         }
     },
     data(){
