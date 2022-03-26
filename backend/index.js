@@ -75,8 +75,11 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_socialMedia,
         permissions_videography,
         permissions_websiteDevelopment,
-        permissions_other
+        permissions_other,
+        profileApproved,
     } = req.body
+
+    permissions_other.replace(/ /g,'')
 
     const otherpermissions = ( (permissions_other==="" || permissions_other==null) ? null : permissions_other)
     
@@ -95,7 +98,8 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_socialMedia: permissions_socialMedia,
         permissions_videography: permissions_videography,
         permissions_websiteDevelopment: permissions_websiteDevelopment,
-        permissions_other: otherpermissions
+        permissions_other: otherpermissions,
+        profileApproved: profileApproved
     })
 
     return res.send("created volunteer")
