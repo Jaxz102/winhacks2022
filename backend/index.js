@@ -9,17 +9,41 @@ app.use(cors()) // want to use cors, no parameters: allow any frontend to use ac
 app.use(bodyParser.json()) // for data formatting. 
 // Ex: have data as jpeg images, but file is png, bodyParser.json() takes file read as jpeg so iphone can read it
 
+// firebase
+var admin = require("firebase-admin");
+var serviceAccount = require("./firebaseApiKey.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+const db = admin.firestore()
+const mainKeyDB = db.collection("mainKey")
+
+
 app.get("/", (req, res) => { // just to check if backend is running
     return res.send("Backend Running")
 })
 
+// for testing & learning 
 app.post("/nicole", async(req, res) => {
+
     const {name} = req.body
+
+    // adding document called name, and its fields into firebase
+    await mainKeyDB.doc(name).set({
+        testField: "testing text",
+        testField2: 123
+    })
+
     return res.send(name)
 })
 
+app.post("/createAdmin", asyn(req, res) => {
+    const {docName} = req.body
 
-
+    await adminDB.doc(docName).set({
+        
+    })
+})
 
 
 
