@@ -31,7 +31,6 @@ app.use("/projects", require('./routes/projects'))
 app.get("/", (req, res) => { // just to check if backend is running
     return res.send("Backend Running")
 })
-
 // for testing & learning 
 app.post("/nicole", async(req, res) => {
     const {name} = req.body
@@ -43,21 +42,18 @@ app.post("/nicole", async(req, res) => {
     return res.send(name)
 })
 
+
 app.post("/createAdmin", async(req, res) => {
     const adminId = v4()
-    const {
-        firstName,
-        lastName
-    } = req.body
-
+    const { firstName, lastName } = req.body
     await adminDB.doc(adminId).set({
         adminId: adminId,
         firstName: firstName,
         lastName: lastName
     })
-
     return res.send("created admin")
 })
+
 
 app.post("/createVolunteer", async(req, res) => {
     const volunteerId = v4()
@@ -99,30 +95,30 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_videography: permissions_videography,
         permissions_websiteDevelopment: permissions_websiteDevelopment,
         permissions_other: otherpermissions,
-        profileApproved: profileApproved
+        profileApproved: profileApproved,
+        projectsPendingApproval: [],
+        projectsInProgress: [],
+        projectsCompleted: [],
     })
-
     return res.send("created volunteer")
 })
 
+
 app.post("/createProjectManager", async(req, res) => {
     const projectManagerId = v4()
-
-    const{
-        firstName,
-        lastName,
-        email,
-        primaryAffiliation,
-    } = req.body
-
+    const{ firstName, lastName, email, primaryAffiliation, biography } = req.body
     await projectManagerDB.doc(projectManagerId).set({
         projectManagerId: projectManagerId,
         firstName: firstName,
         lastName: lastName,
         email: email,
-        primaryAffiliation: primaryAffiliation
+        primaryAffiliation: primaryAffiliation,
+        biography: biography,
+        projectsPendingApproval: [],
+        projectsListed: [],
+        projectsPendingVolunteers: [],
+        projectsInProgress: []
     })
-
     return res.send("created project manager")
 })
 
