@@ -27,7 +27,7 @@ const routes = [
   {
     path: '/voldashboard',
     name: 'voldash',
-    component: PmDash
+    component: VolDash
   },
   {
     path: '/admindashboard',

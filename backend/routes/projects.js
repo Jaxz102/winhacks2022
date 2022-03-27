@@ -12,7 +12,7 @@ const projectManagersDB = db.collection("projectManagers")
 const volunteersDB = db.collection("volunteers")
 
 router.get("/getProject/:projectId", async (req, res) => {
-    const {projectId} = req.params.projectId
+    const projectId = req.params.projectId
     const projectData = await (await projectsDB.doc(projectId).get()).data()
     const projectManagerData = await (await projectManagersDB.doc(projectData.projectManagerId).get()).data()
     const projectCurrentVolunteersData = []
@@ -34,7 +34,7 @@ router.get("/getProject/:projectId", async (req, res) => {
 })
 
 router.get("/dashboard/projectManager/:projectManagerId", async (req, res) => {
-    const { projectManagerId } = req.params.projectManagerId
+    const projectManagerId = req.params.projectManagerId
     const projectsPendingApproval = []
     const projectsListed = []
     const projectsPendingVolunteers = []
@@ -78,7 +78,7 @@ router.get("/dashboard/projectManager/:projectManagerId", async (req, res) => {
 
 
 
-router.post("/create", async (req, res) => {
+router.post("/`create`", async (req, res) => {
     const {title, description, projectManagerId, permissionsArray, projectLength, projectMaxVolunteers} = req.body
     const projectId = v4()
     const date = new Date()

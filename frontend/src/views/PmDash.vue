@@ -1,6 +1,7 @@
 <template>
-    <PmCard v-show="show" @close="openCard()" :darkmode="darkmode"/>
-    <div class="shadow" v-show="show" @click="openCard()"></div>
+    <PmCard v-show="show" @close="openCard()" :darkmode="darkmode" :data="chosenProject"/>
+    <CreateProj v-show="showCreate"/>
+    <div class="shadow" v-show="show || showCreate" @click="close()"></div>
     <main :style="{'background-color': styles.generalBg[darkmode]}" class="projmain">
         <nav :style="{'background-color': styles.navbg[darkmode], 'border-bottom': styles.navborder[darkmode]}">
             <h1 :style="{'color': styles.text[darkmode]}">Project Manager</h1>
@@ -28,66 +29,110 @@
             <div class="col" style=" border-left: solid 1px rgb(224, 224, 224);">
                 <header class="col__head">
                     <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Pending Approval</h2>
-                    <div class="col__head--crumb">3</div>
+                    <div class="col__head--crumb">{{pendingProjects.length}}</div>
                 </header>
-                <div class="col__project" @click="openCard()" :style="{'--hoverproj': styles.projhover[darkmode]}">
-                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">Pizza Maker</h2>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Making another pizza for the community</p>
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in pendingProjects" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+
                 </div>
+
                 
             </div>
             <div class="col">
                 <header class="col__head">
                     <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Listed</h2>
-                    <div class="col__head--crumb">3</div>
+                    <div class="col__head--crumb">{{projectsListed.length}}</div>
                 </header>
+
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in projectsListed" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+
+                </div>
 
                 
             </div>
             <div class="col">
                 <header class="col__head">
                     <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">In Progress</h2>
-                    <div class="col__head--crumb">3</div>
+                    <div class="col__head--crumb">{{pendingVolunteers.length}}</div>
                 </header>
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in pendingVolunteers" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+
+                </div>
                 
             </div>
             <div class="col">
                 <header class="col__head">
                     <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Completed</h2>
-                    <div class="col__head--crumb">3</div>
+                    <div class="col__head--crumb">{{projectsCompleted.length}}</div>
                 </header>
+
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in projectsCompleted" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+
+                </div>
                 
             </div>
         </section>
+        <div class="newproj" @click="createProjModal()">New Project</div>
     </main>
 </template>
 <script>
 import PmCard from "@/components/PmCard.vue"
+import CreateProj from "@/components/CreateProject.vue"
 import dark from "@/assets/dark.json";
 
 export default {
     name: "PmDash",
     components:{
-        PmCard
+        PmCard,
+        CreateProj
     },
     data(){
         return{
             styles: dark,
             show: false,
+            showCreate: false,
             checked: "false",
             darkmode: 0,
+            pendingProjects: [],
+            projectsListed: [],
+            pendingVolunteers:[],
+            projectsCompleted: [],
+            chosenProject: {},
+        
+
         }
     },
     methods:{
         logout(){
             this.$router.push("/");
         },
-        openCard(){
+        openCard(id){
+            this.chosenProject = id;
+            console.log(id)
+
             if(this.show == false){
+                fetch(`http://localhost:3000/projects/getProject/${id}`, {method: 'GET'}).then(response => response.json()).then(data => {
+                    console.log(data)
+                    this.chosenProject = data;
+                })
                 this.show = true;
+                console.log("OPENIN")
             }else{
                 this.show = false;
+                console.log("CLOSING")
             }
+           
         },
         changeMode(){
 			
@@ -101,6 +146,20 @@ export default {
 			}
 			
 		},
+        createProjModal(){
+            if(this.showCreate == false){
+                console.log("Showing show create")
+                this.showCreate = true;
+                
+            }else{
+                this.showCreate = false;
+           
+            }
+        },
+        close(){
+            this.show = false
+            this.showCreate = false
+        }
 
     },
     mounted(){
@@ -110,6 +169,17 @@ export default {
 		}else{
 			this.checked = "false";
 		}
+    
+
+        fetch("http://localhost:3000/projects/dashboard/projectManager/041001fe-367a-4f9c-a5ee-5d10273447e9", {method: 'GET'}).then(response => response.json()).then(data => {
+            console.log(data)
+            this.pendingProjects = data.projectsPendingApproval;
+            this.projectsListed = data.projectsListed;
+            this.pendingVolunteers = data.projectsPendingVolunteers;
+            this.projectsCompleted = data.projectsCompleted;
+        
+           
+        })
     }
 }
 </script>
@@ -236,5 +306,21 @@ section{
 }
 .mainsection{
     height: calc(100% - 60px);
+}
+.newproj{
+    font-size: 25px;
+    color: white;
+    background-color: #4337ee;
+    padding: 10px 20px;
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    font-weight: 600;
+    border-radius: 20px;
+    transition: all .4s;
+    &:hover{
+        cursor: pointer;
+        transform: scale(1.1);
+    }
 }
 </style>

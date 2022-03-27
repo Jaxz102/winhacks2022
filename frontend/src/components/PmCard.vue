@@ -1,5 +1,5 @@
 <template>
-    <main :style="{'background-color': styles.generalBg[darkmode]}">
+    <main :style="{'background-color': styles.generalBg[darkmode]}" v-if="data && data.projectData">
         <nav class="nav">
             <div class="nav__exit" @click="this.$emit('close')">
                 <svg v-if="darkmode == 0" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
@@ -7,8 +7,25 @@
             </div>
             
         </nav>
-        <h1 :style="{'color': styles.generaltext[darkmode]}">Pizza Maker</h1>
-        <p :style="{'color': styles.generaltext[darkmode]}">You make pizzas</p>
+        <h1 :style="{'color': styles.generaltext[darkmode]}">{{data.projectData.title}} <span style="font-size: 15px; ">{{data.projectData.prettyDate}}</span></h1>
+        <p :style="{'color': styles.generaltext[darkmode]}">Duration: {{data.projectData.projectLength}}</p>
+        <p :style="{'color': styles.generaltext[darkmode]}">Name: {{data.projectData.projectManagerFirstName}} {{data.projectData.projectManagerLastName}}</p>
+        <p :style="{'color': styles.generaltext[darkmode]}">Project Manager Email: {{data.projectData.projectManagerEmail}}</p>
+        <p :style="{'color': styles.generaltext[darkmode]}">{{data.projectData.description}}</p>
+        <div class="permissions">
+            <p :style="{'color': styles.generaltext[darkmode]}">Plain Language Communication: {{data.projectData.permissions_plainLanguageCommunication}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Red Cap Consulting: {{data.projectData.permissions_REDCapConsulting}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Videography: {{data.projectData.permissions_videography}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Photography: {{data.projectData.permissions_photography}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Literature Review: {{data.projectData.permissions_literatureReview}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Web Development: {{data.projectData.permissions_websiteDevelopment}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Graphic Design: {{data.projectData.permissions_graphicDesign}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Organizing Events: {{data.projectData.permissions_planningAndOrganizingEvents}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Writing: {{data.projectData.permissions_grantWriting}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Social Media: {{data.projectData.permissions_socialMedia}}</p>
+            <p :style="{'color': styles.generaltext[darkmode]}">Data Analytics: {{data.projectData.permissions_dataAnalytics}}</p>
+    
+        </div>
     </main>
 </template>
 <script>
@@ -19,24 +36,27 @@ export default {
     data(){
         return{
             styles: dark,
+            
         }
     },
     props:{
-        title: String,
-        desc: String,
+     
         darkmode: Number,
+        data: Object,
 
 
     },
     methods:{
         
-    }
+    },
+ 
 
 }
 </script>
 
 <style lang="scss" scoped>
 main{
+    position: relative;
     width: 800px;
     height: 600px;
     position: fixed;
@@ -77,6 +97,12 @@ p{
     text-align: left;
     margin-left: 30px;
     margin-top: 20px;
+}
+.permissions{
+    position: absolute;
+    top: 50px;
+    right: 40px;
+
 }
 
 </style>

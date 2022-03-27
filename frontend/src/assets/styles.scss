@@ -80,3 +80,9 @@ footer{
     background-color: #3f3f3f49;
     z-index: 1;
 }
+
+textarea{
+    outline: none;
+    resize: none;
+    user-select: none;
+}
