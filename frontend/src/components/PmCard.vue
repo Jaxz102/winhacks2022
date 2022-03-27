@@ -12,6 +12,9 @@
         <p :style="{'color': styles.generaltext[darkmode]}">Name: {{data.projectData.projectManagerFirstName}} {{data.projectData.projectManagerLastName}}</p>
         <p :style="{'color': styles.generaltext[darkmode]}">Project Manager Email: {{data.projectData.projectManagerEmail}}</p>
         <p :style="{'color': styles.generaltext[darkmode]}">{{data.projectData.description}}</p>
+        <button @click="approve()" v-if="data.projectData.projectStatus=='pendingAdminApproval' && userType == 0">Approve</button>
+        <button @click="approveVolunteer()" v-else-if="data.projectData.projectStatus=='pendingVolunteers' && userType == 0">Approve Volunteer</button>
+        <button v-if="userType == 2" @click="apply()">Apply</button>
         <div class="permissions">
             <p :style="{'color': styles.generaltext[darkmode]}">Plain Language Communication: {{data.projectData.permissions_plainLanguageCommunication}}</p>
             <p :style="{'color': styles.generaltext[darkmode]}">Red Cap Consulting: {{data.projectData.permissions_REDCapConsulting}}</p>
@@ -36,18 +39,43 @@ export default {
     data(){
         return{
             styles: dark,
-            
+
         }
     },
     props:{
      
         darkmode: Number,
         data: Object,
-
+        userType: Number,
 
     },
     methods:{
         
+        approve(){
+            let thing = {
+                projectId: this.data.projectData.projectId
+            }
+            console.log(this.data.projectData.projectId)
+            fetch(`http://localhost:3000/adminApproval/approveProject/${this.data.projectData.projectId}`, {method:'PUT'}).then(response => response.json()).then(data => {
+                console.log(data)
+            })
+        },
+
+        approveVolunteer(){
+            let thing = {
+                projectId: this.data.projectData.projectId,
+                volunteerId: "867fb218-36c5-4c81-85a6-66fc92919c10"
+            }
+            console.log(this.data.projectData.projectId)
+            fetch(`http://localhost:3000/adminApproval/approveProjectVolunteer/`, {method:'PUT', body: JSON.stringify(thing)}).then(response => response.json()).then(data => {
+                console.log(data)
+            })
+        },
+        apply(){
+            fetch(`http://localhost:3000/volunteers/apply/867fb218-36c5-4c81-85a6-66fc92919c10/${this.data.projectData.projectId}`, {method:'PUT'}).then(response => response.json()).then(data => {
+                console.log(data)
+            })
+        }
     },
  
 
@@ -103,6 +131,16 @@ p{
     top: 50px;
     right: 40px;
 
+}
+
+button{
+    padding: 10px 20px;
+    font-size: 25px;
+    font-weight: 600;
+    background-color: #4337ee;
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
 }
 
 </style>

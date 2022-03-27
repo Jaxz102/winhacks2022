@@ -12,13 +12,13 @@ const projectManagersDB = db.collection("projectManagers")
 const volunteersDB = db.collection("volunteers")
 
 
-router.get("dashboard/:volunteerId", async (req, res) => {
+router.get("/dashboard/:volunteerId", async (req, res) => {
     const volunteerId = req.params.volunteerId
     const projectsListed = []
     const projectsPendingVolunteerApproval = []
     const projectsInProgess = []
     const projectsCompleted = []
-    const querySet = await projectsDB.where("projectStatus", "==", "listed").get()
+    var querySet = await projectsDB.where("projectStatus", "==", "listed").get()
     querySet.forEach((query) => {
         const projectData = query.data()
         const projectCardData = {
@@ -35,8 +35,10 @@ router.get("dashboard/:volunteerId", async (req, res) => {
         projectsListed.push(projectCardData)
     })
     const volunteerData = await (await volunteersDB.doc(volunteerId).get()).data()
+    console.log(volunteerData.projectsPendingApproval)
     volunteerData.projectsPendingApproval.forEach(async (projectId) => {
         const projectData = await (await projectsDB.doc(projectId).get()).data()
+        console.log(projectData)
         const projectCardData = {
             projectManagerFirstName: projectData.projectManagerFirstName,
             projectManagerLastName: projectData.projectManagerLastName,
@@ -94,18 +96,20 @@ router.put('/apply/:volunteerId/:projectId', async (req, res) => {
     const projectId = req.params.projectId
     await projectsDB.doc(projectId).set({ //add voluteer id to params
         [volunteerId]: "applied",
-    })
+    }, {merge: true})
+    const projectDataInit = await (await projectsDB.doc(projectId).get()).data()
     await projectsDB.doc(projectId).update({ //update project with new volunteer pending
-        projectCurrentVolunteerCount: projectCurrentVolunteerCount+1,
-        projectPendingVolunteers: FieldValue.arrayUnion(volunteerId)
+        projectCurrentVolunteerCount: projectDataInit.projectCurrentVolunteerCount+1,
+        projectPendingVolunteers: admin.firestore.FieldValue.arrayUnion(volunteerId)
     })
     await volunteersDB.doc(volunteerId).update({ //add project id to volunteer's pending approval array
-        projectsPendingApproval: FieldValue.arrayUnion(projectId)
+        projectsPendingApproval: admin.firestore.FieldValue.arrayUnion(projectId)
     })
     const projectData = await (await projectsDB.doc(projectId).get()).data()
+    console.log(projectData)
     if (projectData.projectCurrentVolunteerCount == projectData.projectMaxVolunteers) {
         await projectsDB.doc(projectId).update({ //update project with new volunteer pending
-            projectStatus: "pendingAdminApproval"
+            projectStatus: "pendingVolunteers"
         })
         return res.send("Pending volunteers are full, moved to admin pending")
     } else {
@@ -113,6 +117,12 @@ router.put('/apply/:volunteerId/:projectId', async (req, res) => {
     }
 })
 
+
+router.get("/getVolunteer/:volunteerId", async (req, res) => {
+    const volunteerId = req.params.volunteerId
+    const volunteerData = await (await volunteersDB.doc(volunteerId).get()).data()
+    return res.json(volunteerData)
+})
 
 
 module.exports = router

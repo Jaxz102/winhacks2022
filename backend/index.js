@@ -73,11 +73,7 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_socialMedia,
         permissions_videography,
         permissions_websiteDevelopment,
-        permissions_other,
-        profileApproved,
     } = req.body
-    permissions_other.replace(/ /g,'')
-    const otherpermissions = ( (permissions_other==="" || permissions_other==null) ? null : permissions_other)
     await volunteersDB.doc(volunteerId).set({
         volunteerId: volunteerId,
         firstName: firstName,
@@ -93,8 +89,7 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_socialMedia: permissions_socialMedia,
         permissions_videography: permissions_videography,
         permissions_websiteDevelopment: permissions_websiteDevelopment,
-        permissions_other: otherpermissions,
-        profileApproved: profileApproved,
+        profileApproved: false,
         projectsPendingApproval: [],
         projectsInProgress: [],
         projectsCompleted: [],

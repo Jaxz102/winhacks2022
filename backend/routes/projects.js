@@ -78,7 +78,7 @@ router.get("/dashboard/projectManager/:projectManagerId", async (req, res) => {
 
 
 
-router.post("/`create`", async (req, res) => {
+router.post("/create", async (req, res) => {
     const {title, description, projectManagerId, permissionsArray, projectLength, projectMaxVolunteers} = req.body
     const projectId = v4()
     const date = new Date()
@@ -113,26 +113,26 @@ router.post("/`create`", async (req, res) => {
 })
 
 
-router.put("/edit", async (req, res) => {
-    const {title, description, projectManagerId, permissionsArray, projectLength, projectMaxVolunteers, projectCurrentVolunteers, projectStatus} = req.body
-    const projectId = v4()
-    const reqFields = {
-        title: title,
-        projectId: projectId,
-        description: description,
-        projectLength: projectLength,
-        projectCurrentVolunteerCount: projectCurrentVolunteers.length,
-        projectMaxVolunteers: projectMaxVolunteers,
-        projectCurrentVolunteers: projectCurrentVolunteers,
-        projectPendingVolunteers : [],
-        projectStatus: projectStatus // can be "pendingAdminApproval", "listed", "pendingVolunteers", "inProgress", "completed"
-    }
-    const permissionsObject = Object.assign(...permissionsArray)
-    const projectFields = Object.assign({}, reqFields, permissionsObject)
-    console.log(projectFields)
-    await projectsDB.doc(projectId).set(projectFields, {merge: true})
-    return res.send(`Updated project <${title}> - <${projectId}>`)
-})
+// router.put("/edit", async (req, res) => {
+//     const {title, description, projectManagerId, permissionsArray, projectLength, projectMaxVolunteers, projectCurrentVolunteers, projectStatus} = req.body
+//     const projectId = v4()
+//     const reqFields = {
+//         title: title,
+//         projectId: projectId,
+//         description: description,
+//         projectLength: projectLength,
+//         projectCurrentVolunteerCount: projectCurrentVolunteers.length,
+//         projectMaxVolunteers: projectMaxVolunteers,
+//         projectCurrentVolunteers: projectCurrentVolunteers,
+//         projectPendingVolunteers : [],
+//         projectStatus: projectStatus // can be "pendingAdminApproval", "listed", "pendingVolunteers", "inProgress", "completed"
+//     }
+//     const permissionsObject = Object.assign(...permissionsArray)
+//     const projectFields = Object.assign({}, reqFields, permissionsObject)
+//     console.log(projectFields)
+//     await projectsDB.doc(projectId).set(projectFields, {merge: true})
+//     return res.send(`Updated project <${title}> - <${projectId}>`)
+// })
 
 
 router.put("/projectCompleted", async (req, res) => {
@@ -147,13 +147,13 @@ router.put("/projectCompleted", async (req, res) => {
     projectData.projectPendingVolunteers.forEach(async (volunteerId) => {
         await volunteersDB.doc(volunteerId).update({
             projectsInProgress: FieldValue.arrayRemove(projectId),
-            projectsCompleted: FieldValue.arrayUnion(projectId)
+            projectsCompleted: admin.firestore.FieldValue.arrayUnion(projectId)
         })
     })
     projectData.projectCurrentVolunteers.forEach(async (volunteerId) => {
         await volunteersDB.doc(volunteerId).update({
             projectsPendingApproval: FieldValue.arrayRemove(projectId),
-            projectsCompleted: FieldValue.arrayUnion(projectId)
+            projectsCompleted: admin.firestore.FieldValue.arrayUnion(projectId)
         })
     })
     return res.send("Project Completed")

@@ -1,10 +1,10 @@
 <template>
-    <PmCard v-show="show" @close="openCard()" :darkmode="darkmode" :data="chosenProject"/>
+    <PmCard v-show="show" @close="openCard()" :darkmode="darkmode" :data="chosenProject" :userType="0"/>
     <CreateProj v-show="showCreate"/>
     <div class="shadow" v-show="show || showCreate" @click="close()"></div>
-    <main :style="{'background-color': styles.generalBg[darkmode]}" class="projmain">
-        <nav :style="{'background-color': styles.navbgVol[darkmode], 'border-bottom': styles.navborder[darkmode]}">
-            <h1 :style="{'color': 'black'}">Admin</h1>
+    <main :style="{'background-color': '#2b2b2b'}" class="projmain">
+        <nav :style="{'background-color': 'black'}">
+            <h1 :style="{'color': 'white'}">Admin</h1>
             <section class="tool">
                 <!-- <div class="tool__dark">
                     <div class="switch">
@@ -18,7 +18,7 @@
                 
 
                 <div class="tool__logout" @click="logout()">
-                    <p :style="{'color': styles.navlogout[darkmode]}">Logout</p> 
+                    <p :style="{'color': 'white'}">Logout</p> 
                     <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M17,8l-1.41,1.41L17.17,11H9v2h8.17l-1.58,1.58L17,16l4-4L17,8z M5,5h7V3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h7v-2H5V5z"/></g></svg>
                 </div>
 
@@ -28,13 +28,13 @@
         <section >
             <div class="col" style=" border-left: solid 1px rgb(224, 224, 224);">
                 <header class="col__head">
-                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Pending Approval</h2>
+                    <h2 class="col__head--name" :style="{'color': 'white'}">Pending Approval</h2>
                     <div class="col__head--crumb">{{pendingProjects.length}}</div>
                 </header>
                 <div class="col__project" @click="openCard(item.projectId)" v-for="item in pendingProjects" :style="{'--hoverproj': styles.projhover[darkmode]}">
-                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+                    <h2 class="col__project--title" :style="{'color': 'white'}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': 'white'}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': 'white'}">{{item.prettyDate}}</p>
 
                 </div>
 
@@ -42,14 +42,14 @@
             </div>
             <div class="col">
                 <header class="col__head">
-                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Listed</h2>
+                    <h2 class="col__head--name" :style="{'color': 'white'}">Listed</h2>
                     <div class="col__head--crumb">{{projectsListed.length}}</div>
                 </header>
 
                 <div class="col__project" @click="openCard(item.projectId)" v-for="item in projectsListed" :style="{'--hoverproj': styles.projhover[darkmode]}">
-                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+                    <h2 class="col__project--title" :style="{'color': 'white'}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': 'white'}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': 'white'}">{{item.prettyDate}}</p>
 
                 </div>
 
@@ -57,33 +57,33 @@
             </div>
             <div class="col">
                 <header class="col__head">
-                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">In Progress</h2>
+                    <h2 class="col__head--name" :style="{'color': 'white'}">Pending Volunteers</h2>
                     <div class="col__head--crumb">{{pendingVolunteers.length}}</div>
                 </header>
                 <div class="col__project" @click="openCard(item.projectId)" v-for="item in pendingVolunteers" :style="{'--hoverproj': styles.projhover[darkmode]}">
-                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+                    <h2 class="col__project--title" :style="{'color': 'white'}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': 'white'}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': 'white'}">{{item.prettyDate}}</p>
 
                 </div>
                 
             </div>
             <div class="col">
                 <header class="col__head">
-                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Completed</h2>
-                    <div class="col__head--crumb">{{projectsCompleted.length}}</div>
+                    <h2 class="col__head--name" :style="{'color': 'white'}">In Progress</h2>
+                    <div class="col__head--crumb">{{InProgress.length}}</div>
                 </header>
 
-                <div class="col__project" @click="openCard(item.projectId)" v-for="item in projectsCompleted" :style="{'--hoverproj': styles.projhover[darkmode]}">
-                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
-                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in InProgress" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                    <h2 class="col__project--title" :style="{'color': 'white'}">{{item.title}}</h2>
+                    <p class="col__project--desc" :style="{'color': 'white'}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
+                    <p class="col__project--desc" :style="{'color': 'white'}">{{item.prettyDate}}</p>
 
                 </div>
                 
             </div>
         </section>
-        <div class="newproj" @click="createProjModal()">New Project</div>
+
     </main>
 </template>
 <script>
@@ -107,7 +107,7 @@ export default {
             pendingProjects: [],
             projectsListed: [],
             pendingVolunteers:[],
-            projectsCompleted: [],
+            InProgress: [],
             chosenProject: {},
         
 
@@ -118,7 +118,7 @@ export default {
             this.$router.push("/");
         },
         openCard(id){
-            this.chosenProject = id;
+            
             console.log(id)
 
             if(this.show == false){
@@ -171,12 +171,12 @@ export default {
 		}
     
 
-        fetch("http://localhost:3000/projects/dashboard/projectManager/041001fe-367a-4f9c-a5ee-5d10273447e9", {method: 'GET'}).then(response => response.json()).then(data => {
+        fetch("http://localhost:3000/adminApproval/admin/", {method: 'GET'}).then(response => response.json()).then(data => {
             console.log(data)
             this.pendingProjects = data.projectsPendingApproval;
             this.projectsListed = data.projectsListed;
             this.pendingVolunteers = data.projectsPendingVolunteers;
-            this.projectsCompleted = data.projectsCompleted;
+            this.InProgress = data.projectInProgress;
         
            
         })
@@ -234,9 +234,9 @@ section{
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background-color: #9637ee;
+            background-color: white;
             padding: 5px;
-            color: white;
+            color: black;
             font-weight: 800;
         }
     }

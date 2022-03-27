@@ -18,11 +18,14 @@ router.put("/approveVolunteer", async (req, res) => {
     return res.send("admin approved volunteer")
 })
 
-router.put("/approveProject", async (req, res) => {
-    const {projectId} = req.body
+router.put("/approveProject/:projectId", async (req, res) => {
+    const projectId = req.params.projectId
+    console.log(projectId)
     await projectsDB.doc(projectId).update({
         projectStatus: "listed"
     })
+    const test = await (await projectsDB.doc(projectId).get()).data()
+    console.log(test)
     return res.send("Project set to listed")
 })
 
@@ -30,12 +33,12 @@ router.put("/approveProjectVolunteer", async (req, res) => {
     const {projectId, volunteerId} = req.body
     await projectsDB.doc(projectId).update({
         projectPendingVolunteers: FieldValue.arrayRemove(volunteerId),
-        projectCurrentVolunteers: FieldValue.arrayUnion(volunteerId),
+        projectCurrentVolunteers: admin.firestore.FieldValue.arrayUnion(volunteerId),
         [volunteerId]: "approved"
     })
     await volunteersDB.doc(volunteerId).update({
         projectsPendingApproval: FieldValue.arrayRemove(projectId),
-        projectsInProgress: FieldValue.arrayUnion(projectId)
+        projectsInProgress: admin.firestore.FieldValue.arrayUnion(projectId)
     })
     return res.send("Volunteer Approved")
 })
@@ -79,7 +82,7 @@ router.get("/admin", async (req, res) => {
         }
         projectsListed.push(projectCardData)
     })
-    querySet = await projectsDB.where("projectStatus", "==", "pendingAdminApproval").get()
+    querySet = await projectsDB.where("projectStatus", "==", "pendingVolunteer").get()
     querySet.forEach((query) => {
         const projectData = query.data()
         const projectCardData = {

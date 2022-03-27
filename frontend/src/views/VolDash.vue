@@ -1,5 +1,5 @@
 <template>
-    <PmCard v-show="show" @close="openCard()" :darkmode="darkmode" :data="chosenProject"/>
+    <PmCard v-show="show" @close="openCard()" :darkmode="darkmode" :data="chosenProject" :userType="2"/>
     <CreateProj v-show="showCreate"/>
     <div class="shadow" v-show="show || showCreate" @click="close()"></div>
     <main :style="{'background-color': styles.generalBg[darkmode]}" class="projmain">
@@ -28,25 +28,23 @@
         <section >
             <div class="col" style=" border-left: solid 1px rgb(224, 224, 224);">
                 <header class="col__head">
-                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Pending Approval</h2>
-                    <div class="col__head--crumb">{{pendingProjects.length}}</div>
+                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Project's Listed</h2>
+                    <div class="col__head--crumb">{{projectsListed.length}}</div>
                 </header>
-                <div class="col__project" @click="openCard(item.projectId)" v-for="item in pendingProjects" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in projectsListed" :style="{'--hoverproj': styles.projhover[darkmode]}">
                     <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
                     <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
                     <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
-
                 </div>
 
-                
             </div>
             <div class="col">
                 <header class="col__head">
-                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Listed</h2>
-                    <div class="col__head--crumb">{{projectsListed.length}}</div>
+                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Pending Approval</h2>
+                    <div class="col__head--crumb">{{volApproval.length}}</div>
                 </header>
 
-                <div class="col__project" @click="openCard(item.projectId)" v-for="item in projectsListed" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in volApproval" :style="{'--hoverproj': styles.projhover[darkmode]}">
                     <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
                     <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
                     <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
@@ -58,9 +56,9 @@
             <div class="col">
                 <header class="col__head">
                     <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">In Progress</h2>
-                    <div class="col__head--crumb">{{pendingVolunteers.length}}</div>
+                    <div class="col__head--crumb">{{inProgress.length}}</div>
                 </header>
-                <div class="col__project" @click="openCard(item.projectId)" v-for="item in pendingVolunteers" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                <div class="col__project" @click="openCard(item.projectId)" v-for="item in inProgress" :style="{'--hoverproj': styles.projhover[darkmode]}">
                     <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">{{item.title}}</h2>
                     <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Spots Left: {{item.projectCurrentVolunteerCount}}/{{item.projectMaxVolunteers}}</p>
                     <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">{{item.prettyDate}}</p>
@@ -83,7 +81,7 @@
                 
             </div>
         </section>
-        <div class="newproj" @click="createProjModal()">New Project</div>
+        
     </main>
 </template>
 <script>
@@ -104,9 +102,9 @@ export default {
             showCreate: false,
             checked: "false",
             darkmode: 0,
-            pendingProjects: [],
+            volApproval: [],
             projectsListed: [],
-            pendingVolunteers:[],
+            inProgress:[],
             projectsCompleted: [],
             chosenProject: {},
         
@@ -171,14 +169,15 @@ export default {
 		}
     
 
-        fetch("http://localhost:3000/projects/dashboard/projectManager/041001fe-367a-4f9c-a5ee-5d10273447e9", {method: 'GET'}).then(response => response.json()).then(data => {
+        fetch("http://localhost:3000/volunteers/dashboard/867fb218-36c5-4c81-85a6-66fc92919c10", {method: 'GET'}).then(response => response.json()).then(data => {
             console.log(data)
-            this.pendingProjects = data.projectsPendingApproval;
+            this.volApproval = data.projectsPendingVolunteerApproval;
             this.projectsListed = data.projectsListed;
-            this.pendingVolunteers = data.projectsPendingVolunteers;
+            this.inProgress = data.projectsInProgess;
             this.projectsCompleted = data.projectsCompleted;
+
+
         
-           
         })
     }
 }
