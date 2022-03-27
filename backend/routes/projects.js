@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
     })
 })
 
-router.get("/dashboard", async (req, res) => {
+router.get("/dashboard/projectManager", async (req, res) => {
     const { projectManagerId } = req.body
     const projectsPendingApproval = []
     const projectsListed = []
