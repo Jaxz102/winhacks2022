@@ -1,8 +1,20 @@
 <template>
+    <PmCard v-show="show" @close="openCard()"/>
+    <div class="shadow" v-show="show" @click="openCard()"></div>
     <main>
-        <nav>
+        <nav :style="{'background-color': styles.navtext[darkmode]}">
             <h1>Project Manager</h1>
             <section class="tool">
+                <div class="tool__dark">
+                    <div class="switch">
+                        <label class="theme-switch" for="checkbox">
+                            <input type="checkbox" id="checkbox" v-model="checked" @click="changeMode()"/>
+                            <div class="slider round"></div>
+                        </label>
+                        <p :style="{'color': styles.navtext[darkmode]}">Dark Mode</p>
+                    </div>
+                </div>
+                
 
                 <div class="tool__logout" @click="logout()">
                     <p>Logout</p> 
@@ -51,22 +63,64 @@
 </template>
 <script>
 import PmCard from "@/components/PmCard.vue"
+import dark from "@/assets/dark.json";
 
 export default {
     name: "PmDash",
+    components:{
+        PmCard
+    },
+    data(){
+        return{
+            styles: dark,
+            show: false,
+            checked: "false",
+            darkmode: 0,
+        }
+    },
     methods:{
         logout(){
             this.$router.push("/");
-        }
+        },
+        openCard(){
+            if(this.show == false){
+                this.show = true;
+            }else{
+                this.show = false;
+            }
+        },
+        changeMode(){
+			
+			if(this.darkmode == 0){
+				this.$store.commit("changeMode", 1);
+				this.darkmode = 1;
+				
+			}else{
+				this.$store.commit("changeMode", 0);
+				this.darkmode = 0;
+			}
+			
+		},
+
+    },
+    mounted(){
+        this.darkmode = this.$store.state.mode;
+        if(this.darkmode == 1){
+			this.checked = "true";
+		}else{
+			this.checked = "false";
+		}
     }
 }
 </script>
 
 <style lang="scss" scoped>
+@import "../assets/styles.scss";
+@import "../assets/dark.scss";
 nav{
     position: relative;
     height: 60px;
-    background-color: white;
+    background-color: #4337ee;
     border-bottom: 1px solid rgb(202, 202, 202);
     
 }
@@ -76,7 +130,7 @@ h1{
     transform: translateY(-50%);
     left: 100px;
     font-size: 40px;
-    color: #4337ee;
+    color: white;
 }
 section{
     display: flex;
@@ -137,9 +191,16 @@ section{
 }
 .tool{
     position: absolute;
-    right: 100px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
+    // background-color: red;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 30px;
+    height: 100%;
 
     &__logout{
         &:hover{
@@ -161,5 +222,12 @@ section{
         }
 
     }
+
+    &__dark{
+       
+        padding: 0px 10px;
+        width: fit-content;
+    }
 }
+
 </style>
