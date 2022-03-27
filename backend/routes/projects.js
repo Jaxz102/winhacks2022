@@ -6,7 +6,7 @@ const {v4} = require("uuid")
 var admin = require("firebase-admin");
 const db = admin.firestore()
 const { FieldValue } = require("firebase/firestore");
-const { json } = require("express");
+const { json, query } = require("express");
 const projectsDB = db.collection("projects")
 const projectManagersDB = db.collection("projectManagers")
 const volunteersDB = db.collection("volunteers")
@@ -32,6 +32,39 @@ router.get("/", async (req, res) => {
         projectPendingVolunteersData: projectPendingVolunteersData
     })
 })
+
+router.get("/dashboard/projectManager", async (req, res) => {
+    const { projectManagerId } = req.body
+    const projectsPendingApproval = []
+    const projectsListed = []
+    const projectsPendingVolunteers = []
+    const projectsCompleted = []
+    const querySet = await projectsDB.where("projectManagerId" == projectManagerId).orderBy("date").limit(10)
+    querySet.forEach((query) => {
+        const projectData = query.data()
+        if (projectData.projectStatus === "pendingAdminApproval") {
+            projectsPendingApproval.push(projectData)
+        } else if (projectData.projectStatus === "pendingVolunteers" || projectData.projectStatus === "listed") {
+            projectsListed.push(projectData)
+        } else if (projectData.projectStatus === "inProgress") {
+            projectsPendingVolunteers.push(projectData)
+        } else if (projectData.projectStatus === "completed") {
+            projectsCompleted.push(projectData)
+        }
+    })
+    projectsPendingApproval.sort((a, b) => parseFloat(a.date) - parseFloat(b.date))
+    projectsListed.sort((a, b) => parseFloat(a.date) - parseFloat(b.date))
+    projectsPendingVolunteers.sort((a, b) => parseFloat(a.date) - parseFloat(b.date))
+    projectsCompleted.sort((a, b) => parseFloat(a.date) - parseFloat(b.date))
+    return res.json({
+        projectsPendingApproval: projectsPendingApproval,
+        projectsListed: projectsListed,
+        projectsPendingVolunteers: projectsPendingVolunteers,
+        projectsCompleted: projectsCompleted
+    })
+})
+
+
 
 router.post("/create", async (req, res) => {
     const {title, description, projectManagerId, permissionsArray, projectLength, projectMaxVolunteers} = req.body
