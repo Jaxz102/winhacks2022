@@ -40,7 +40,7 @@ router.post("/create", async (req, res) => {
     const projectManager = await (await projectManagersDB.doc(projectManagerId).get()).data()
     const reqFields = {
         title: title,
-        date: date,
+        date: Date.now(),
         prettyDate: date.toDateString(),
         projectId: projectId,
         description: description,
