@@ -1,6 +1,8 @@
 {
     "generalBg": ["#fff", "#2b2b2b"],
-    "text": ["#2c3e50", "#fff"],
+    "text": ["#4337ee", "#fff"],
     "pmcolour": ["#4337ee", "#554ae9"],
-    "navtext": ["#fff", "#4337ee"]
+    "navtext": ["#fff", "#4337ee"],
+    "navbg":["#fff", "#4337ee"],
+    "navlogout":["#2b2b2b", "#4337ee"]
 }
