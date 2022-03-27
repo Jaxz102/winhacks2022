@@ -17,8 +17,8 @@ admin.initializeApp({
 });
 const db = admin.firestore()
 const adminDB = db.collection("admin")
-const volunteerDB = db.collection("volunteers")
-const projectManagerDB = db.collection("projectManagers")
+const volunteersDB = db.collection("volunteers")
+const projectManagersDB = db.collection("projectManagers")
 
 // for routing
 app.use("/projects", require('./routes/projects'))
@@ -76,12 +76,9 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_other,
         profileApproved,
     } = req.body
-
     permissions_other.replace(/ /g,'')
-
     const otherpermissions = ( (permissions_other==="" || permissions_other==null) ? null : permissions_other)
-    
-    await volunteerDB.doc(volunteerId).set({
+    await volunteersDB.doc(volunteerId).set({
         volunteerId: volunteerId,
         firstName: firstName,
         lastName: lastName,
@@ -109,7 +106,7 @@ app.post("/createVolunteer", async(req, res) => {
 app.post("/createProjectManager", async(req, res) => {
     const projectManagerId = v4()
     const{ firstName, lastName, email, primaryAffiliation, biography } = req.body
-    await projectManagerDB.doc(projectManagerId).set({
+    await projectManagersDB.doc(projectManagerId).set({
         projectManagerId: projectManagerId,
         firstName: firstName,
         lastName: lastName,
@@ -119,7 +116,8 @@ app.post("/createProjectManager", async(req, res) => {
         projectsPendingApproval: [],
         projectsListed: [],
         projectsPendingVolunteers: [],
-        projectsInProgress: []
+        projectsInProgress: [],
+        projectsCompleted: []
     })
     return res.send("created project manager")
 })
