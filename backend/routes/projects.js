@@ -39,7 +39,8 @@ router.get("/dashboard/projectManager", async (req, res) => {
     const projectsListed = []
     const projectsPendingVolunteers = []
     const projectsCompleted = []
-    const querySet = await projectsDB.where("projectManagerId" == projectManagerId).orderBy("date").limit(10)
+    const querySet = await projectsDB.where("projectManagerId", "==", projectManagerId).get()
+    // querySet.forEach((query) => {console.log(query.data())})
     querySet.forEach((query) => {
         const projectData = query.data()
         if (projectData.projectStatus === "pendingAdminApproval") {
