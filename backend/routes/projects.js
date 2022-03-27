@@ -11,6 +11,28 @@ const projectsDB = db.collection("projects")
 const projectManagersDB = db.collection("projectManagers")
 const volunteersDB = db.collection("volunteers")
 
+router.get("/", async (req, res) => {
+    const {projectId} = req.body
+    const projectData = await (await projectsDB.doc(projectId).get()).data()
+    const projectManagerData = await (await projectManagersDB.doc(projectData.projectManagerId).get()).data()
+    const projectCurrentVolunteersData = []
+    projectData.projectCurrentVolunteers.forEach(async (volunteerId) => {
+        const volunteerData = await volunteersDB.doc(volunteerId).get().data()
+        projectCurrentVolunteersData.push(volunteerData)
+    })
+    const projectPendingVolunteersData = []
+    projectData.projectPendingVolunteers.forEach(async (volunteerId) => {
+        const volunteerData = await volunteersDB.doc(volunteerId).get().data()
+        projectPendingVolunteersData.push(volunteerData)
+    })
+    return res.json({
+        projectData: projectData, 
+        projectManagerData: projectManagerData,
+        projectCurrentVolunteersData: projectCurrentVolunteersData,
+        projectPendingVolunteersData: projectPendingVolunteersData
+    })
+})
+
 router.post("/create", async (req, res) => {
     const {title, description, projectManagerId, permissionsArray, projectLength, projectMaxVolunteers} = req.body
     const projectId = v4()
