@@ -20,9 +20,9 @@ const adminDB = db.collection("admin")
 const volunteerDB = db.collection("volunteers")
 const projectManagerDB = db.collection("projectManagers")
 
-
+// for routing
 app.use("/projects", require('./routes/projects'))
-
+app.use("/adminApproval", require('./routes/adminApproval'))
 
 
 
@@ -31,6 +31,8 @@ app.use("/projects", require('./routes/projects'))
 app.get("/", (req, res) => { // just to check if backend is running
     return res.send("Backend Running")
 })
+
+
 // for testing & learning 
 app.post("/nicole", async(req, res) => {
     const {name} = req.body
