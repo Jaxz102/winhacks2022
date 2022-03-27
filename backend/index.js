@@ -95,9 +95,9 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_websiteDevelopment: permissions_websiteDevelopment,
         permissions_other: otherpermissions,
         profileApproved: profileApproved,
-        projectsPendingApproval: [],
-        projectsInProgress: [],
-        projectsCompleted: [],
+        // projectsPendingApproval: [],
+        // projectsInProgress: [],
+        // projectsCompleted: [],
     })
     return res.send("created volunteer")
 })
@@ -113,11 +113,11 @@ app.post("/createProjectManager", async(req, res) => {
         email: email,
         primaryAffiliation: primaryAffiliation,
         biography: biography,
-        projectsPendingApproval: [],
-        projectsListed: [],
-        projectsPendingVolunteers: [],
-        projectsInProgress: [],
-        projectsCompleted: []
+        // projectsPendingApproval: [],
+        // projectsListed: [],
+        // projectsPendingVolunteers: [],
+        // projectsInProgress: [],
+        // projectsCompleted: []
     })
     return res.send("created project manager")
 })
