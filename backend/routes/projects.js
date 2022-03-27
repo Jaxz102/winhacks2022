@@ -11,8 +11,8 @@ const projectsDB = db.collection("projects")
 const projectManagersDB = db.collection("projectManagers")
 const volunteersDB = db.collection("volunteers")
 
-router.get("/", async (req, res) => {
-    const {projectId} = req.body
+router.get("/getProject/:projectId", async (req, res) => {
+    const {projectId} = req.params.projectId
     const projectData = await (await projectsDB.doc(projectId).get()).data()
     const projectManagerData = await (await projectManagersDB.doc(projectData.projectManagerId).get()).data()
     const projectCurrentVolunteersData = []
@@ -33,8 +33,8 @@ router.get("/", async (req, res) => {
     })
 })
 
-router.get("/dashboard/projectManager", async (req, res) => {
-    const { projectManagerId } = req.body
+router.get("/dashboard/projectManager/:projectManagerId", async (req, res) => {
+    const { projectManagerId } = req.params.projectManagerId
     const projectsPendingApproval = []
     const projectsListed = []
     const projectsPendingVolunteers = []
