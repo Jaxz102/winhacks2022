@@ -1,8 +1,8 @@
 <template>
-    <PmCard v-show="show" @close="openCard()"/>
+    <PmCard v-show="show" @close="openCard()" :darkmode="darkmode"/>
     <div class="shadow" v-show="show" @click="openCard()"></div>
-    <main :style="{'background-color': styles.generalBg[darkmode]}">
-        <nav :style="{'background-color': styles.navbg[darkmode]}">
+    <main :style="{'background-color': styles.generalBg[darkmode]}" class="projmain">
+        <nav :style="{'background-color': styles.navbg[darkmode], 'border-bottom': styles.navborder[darkmode]}">
             <h1 :style="{'color': styles.text[darkmode]}">Project Manager</h1>
             <section class="tool">
                 <div class="tool__dark">
@@ -27,18 +27,18 @@
         <section >
             <div class="col" style=" border-left: solid 1px rgb(224, 224, 224);">
                 <header class="col__head">
-                    <h2 class="col__head--name">Pending Approval</h2>
+                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Pending Approval</h2>
                     <div class="col__head--crumb">3</div>
                 </header>
-                <div class="col__project" @click="openCard()">
-                    <h2 class="col__project--title">Pizza Maker</h2>
-                    <p class="col__project--desc">Making another pizza for the community</p>
+                <div class="col__project" @click="openCard()" :style="{'--hoverproj': styles.projhover[darkmode]}">
+                    <h2 class="col__project--title" :style="{'color': styles.generaltext[darkmode]}">Pizza Maker</h2>
+                    <p class="col__project--desc" :style="{'color': styles.generaltext[darkmode]}">Making another pizza for the community</p>
                 </div>
                 
             </div>
             <div class="col">
                 <header class="col__head">
-                    <h2 class="col__head--name">Listed</h2>
+                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Listed</h2>
                     <div class="col__head--crumb">3</div>
                 </header>
 
@@ -46,14 +46,14 @@
             </div>
             <div class="col">
                 <header class="col__head">
-                    <h2 class="col__head--name">In Progress</h2>
+                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">In Progress</h2>
                     <div class="col__head--crumb">3</div>
                 </header>
                 
             </div>
             <div class="col">
                 <header class="col__head">
-                    <h2 class="col__head--name">Completed</h2>
+                    <h2 class="col__head--name" :style="{'color': styles.generaltext[darkmode]}">Completed</h2>
                     <div class="col__head--crumb">3</div>
                 </header>
                 
@@ -117,15 +117,16 @@ export default {
 <style lang="scss" scoped>
 @import "../assets/styles.scss";
 @import "../assets/dark.scss";
-main{
+.projmain{
     height: 100%;
     width: 100%;
+
 }
 nav{
     position: relative;
     height: 60px;
-    background-color: #4337ee;
-    border-bottom: 1px solid rgb(202, 202, 202);
+    
+  
     
 }
 h1{
@@ -174,7 +175,7 @@ section{
             cursor: pointer;
             transform: scale(1.05);
             // background-color: #bbb6ff;
-            box-shadow: 0px 0px 1px 2px #4337ee;
+            box-shadow: 0px 0px 1px 2px var(--hoverproj);
         }
         width: 100%;
         height: fit-content;

@@ -1,23 +1,30 @@
 <template>
-    <main>
+    <main :style="{'background-color': styles.generalBg[darkmode]}">
         <nav class="nav">
             <div class="nav__exit" @click="this.$emit('close')">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+                <svg v-if="darkmode == 0" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
             </div>
             
         </nav>
-        <h1>Pizza Maker</h1>
-        <p>You make pizzas</p>
+        <h1 :style="{'color': styles.generaltext[darkmode]}">Pizza Maker</h1>
+        <p :style="{'color': styles.generaltext[darkmode]}">You make pizzas</p>
     </main>
 </template>
 <script>
-
+import dark from "@/assets/dark.json";
 
 export default {
     name: "PmCard",
+    data(){
+        return{
+            styles: dark,
+        }
+    },
     props:{
         title: String,
         desc: String,
+        darkmode: Number,
 
 
     },
@@ -30,7 +37,7 @@ export default {
 
 <style lang="scss" scoped>
 main{
-    width: 1000px;
+    width: 800px;
     height: 600px;
     position: fixed;
     top: 50%;
@@ -38,7 +45,7 @@ main{
     transform: translate(-50%, -50%);
     z-index: 2;
     border-radius: 10px;
-    background-color: white;
+  
     box-shadow: 0px 0px 1px 2px rgb(202, 202, 202);
   
 
