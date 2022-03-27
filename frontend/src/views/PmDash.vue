@@ -1,9 +1,9 @@
 <template>
     <PmCard v-show="show" @close="openCard()"/>
     <div class="shadow" v-show="show" @click="openCard()"></div>
-    <main>
-        <nav :style="{'background-color': styles.navtext[darkmode]}">
-            <h1>Project Manager</h1>
+    <main :style="{'background-color': styles.generalBg[darkmode]}">
+        <nav :style="{'background-color': styles.navbg[darkmode]}">
+            <h1 :style="{'color': styles.text[darkmode]}">Project Manager</h1>
             <section class="tool">
                 <div class="tool__dark">
                     <div class="switch">
@@ -11,20 +11,20 @@
                             <input type="checkbox" id="checkbox" v-model="checked" @click="changeMode()"/>
                             <div class="slider round"></div>
                         </label>
-                        <p :style="{'color': styles.navtext[darkmode]}">Dark Mode</p>
+                        <p :style="{'color': styles.text[darkmode]}">Dark Mode</p>
                     </div>
                 </div>
                 
 
                 <div class="tool__logout" @click="logout()">
-                    <p>Logout</p> 
+                    <p :style="{'color': styles.navlogout[darkmode]}">Logout</p> 
                     <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000"><g><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M17,8l-1.41,1.41L17.17,11H9v2h8.17l-1.58,1.58L17,16l4-4L17,8z M5,5h7V3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h7v-2H5V5z"/></g></svg>
                 </div>
 
             </section>
            
         </nav>
-        <section>
+        <section >
             <div class="col" style=" border-left: solid 1px rgb(224, 224, 224);">
                 <header class="col__head">
                     <h2 class="col__head--name">Pending Approval</h2>
@@ -117,6 +117,10 @@ export default {
 <style lang="scss" scoped>
 @import "../assets/styles.scss";
 @import "../assets/dark.scss";
+main{
+    height: 100%;
+    width: 100%;
+}
 nav{
     position: relative;
     height: 60px;
@@ -137,6 +141,7 @@ section{
     flex-direction: row;
     padding: 20px 50px;
     align-items: stretch;
+    
 
     & > div{
         width: 25%;
@@ -204,7 +209,6 @@ section{
 
     &__logout{
         &:hover{
-            color: #4337ee;
             cursor: pointer;
         }
         display: flex;
@@ -229,5 +233,7 @@ section{
         width: fit-content;
     }
 }
-
+.mainsection{
+    height: calc(100% - 60px);
+}
 </style>

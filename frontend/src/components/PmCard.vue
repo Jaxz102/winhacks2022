@@ -30,8 +30,8 @@ export default {
 
 <style lang="scss" scoped>
 main{
-    width: 600px;
-    height: 400px;
+    width: 1000px;
+    height: 600px;
     position: fixed;
     top: 50%;
     left: 50%;
