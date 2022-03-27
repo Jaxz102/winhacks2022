@@ -43,14 +43,25 @@ router.get("/dashboard/projectManager", async (req, res) => {
     // querySet.forEach((query) => {console.log(query.data())})
     querySet.forEach((query) => {
         const projectData = query.data()
+        const projectCardData = {
+            projectManagerFirstName: projectData.projectManagerFirstName,
+            projectManagerLastName: projectData.projectManagerLastName,
+            prettyDate: projectData.prettyDate,
+            projectLength: projectData.projectLength,
+            projectCurrentVolunteerCount: projectData.projectCurrentVolunteerCount,
+            projectMaxVolunteers: projectData.projectMaxVolunteers,
+            title: projectData.title,
+            projectManagerPrimaryAffiliation: projectData.projectManagerPrimaryAffiliation,
+            projectId: projectData.projectId
+        }
         if (projectData.projectStatus === "pendingAdminApproval") {
-            projectsPendingApproval.push(projectData)
+            projectsPendingApproval.push(projectCardData)
         } else if (projectData.projectStatus === "pendingVolunteers" || projectData.projectStatus === "listed") {
-            projectsListed.push(projectData)
+            projectsListed.push(projectCardData)
         } else if (projectData.projectStatus === "inProgress") {
-            projectsPendingVolunteers.push(projectData)
+            projectsPendingVolunteers.push(projectCardData)
         } else if (projectData.projectStatus === "completed") {
-            projectsCompleted.push(projectData)
+            projectsCompleted.push(projectCardData)
         }
     })
     projectsPendingApproval.sort((a, b) => parseFloat(a.date) - parseFloat(b.date))
