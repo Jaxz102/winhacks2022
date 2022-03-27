@@ -23,7 +23,7 @@ const projectManagersDB = db.collection("projectManagers")
 // for routing
 app.use("/projects", require('./routes/projects'))
 app.use("/adminApproval", require('./routes/adminApproval'))
-
+app.use("/volunteers", require('./routes/volunteers'))
 
 
 
@@ -95,9 +95,9 @@ app.post("/createVolunteer", async(req, res) => {
         permissions_websiteDevelopment: permissions_websiteDevelopment,
         permissions_other: otherpermissions,
         profileApproved: profileApproved,
-        // projectsPendingApproval: [],
-        // projectsInProgress: [],
-        // projectsCompleted: [],
+        projectsPendingApproval: [],
+        projectsInProgress: [],
+        projectsCompleted: [],
     })
     return res.send("created volunteer")
 })
