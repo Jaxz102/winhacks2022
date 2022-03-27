@@ -6,8 +6,8 @@ var admin = require("firebase-admin");
 
 // starting to get collections, to use db.collections
 const db = admin.firestore()
-
 const volunteersDB = db.collection("volunteers")
+const projectsDB = db.collection("projects")
 
 router.put("/approveVolunteer", async (req, res) => {
     const { volunteerId } = req.body
@@ -15,6 +15,13 @@ router.put("/approveVolunteer", async (req, res) => {
         profileApproved: true
     })
     return res.send("admin approved volunteer")
+})
+
+router.put("/approveProject", async (req, res) => {
+    const {projectId} = req.body
+    await projectsDB.doc(projectId).update({
+        projectStatus: "listed"
+    })
 })
 
 module.exports = router
