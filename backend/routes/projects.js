@@ -99,7 +99,7 @@ router.post("/create", async (req, res) => {
         projectMaxVolunteers: projectMaxVolunteers,
         projectCurrentVolunteers: [],
         projectPendingVolunteers : [],
-        projectStatus: "pendingAdminApproval" // can be "pendingAdminApproval", "listed", "pendingVolunteers", "inProgress", "completed"
+        projectStatus: "pendingAdminApproval" // can be "pendingAdminApproval", "listed", "pendingVolunteers", "inProgress", "completed", "pendingAdminApproval"
     }
     const permissionsObject = Object.assign(...permissionsArray)
     const projectFields = Object.assign({}, reqFields, permissionsObject)
@@ -134,6 +134,49 @@ router.put("/edit", async (req, res) => {
     return res.send(`Updated project <${title}> - <${projectId}>`)
 })
 
+
+router.put("/projectCompleted", async (req, res) => {
+    const {projectId} = req.body
+    await projectsDB.doc(projectId).update({
+        projectPendingVolunteers: [],
+        projectCurrentVolunteers: [],
+        projectStatus: "completed",
+        [volunteerId]: "completed"
+    })
+    const projectData = await (await projectsDB.doc(projectId).get()).data()
+    projectData.projectPendingVolunteers.forEach(async (volunteerId) => {
+        await volunteersDB.doc(volunteerId).update({
+            projectsInProgress: FieldValue.arrayRemove(projectId),
+            projectsCompleted: FieldValue.arrayUnion(projectId)
+        })
+    })
+    projectData.projectCurrentVolunteers.forEach(async (volunteerId) => {
+        await volunteersDB.doc(volunteerId).update({
+            projectsPendingApproval: FieldValue.arrayRemove(projectId),
+            projectsCompleted: FieldValue.arrayUnion(projectId)
+        })
+    })
+    return res.send("Project Completed")
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // router.delete("/delete", async (req, res) => {
 //     const { projectId } = req.body
 //     const projectData = await projectsDB.doc(projectId).get().data()
@@ -158,44 +201,44 @@ router.put("/edit", async (req, res) => {
 // })
 
 
-router.post("/moveUp", async (req, res) => {
-    const {projectId} = req.body
-    const projectData = await (await projectsDB.doc(projectId).get()).data()
-    const projectStatus = projectData.projectStatus
-    const projectManagerId = projectData.projectManagerId
-    if (projectStatus === "pendingAdminApproval") {
-        await projectsDB.doc(projectId).update({projectStatus: "listed"})
-    } else if (projectStatus === "listed") {
-        await projectsDB.doc(projectId).update({projectStatus: "pendingVolunteers"})
-    } else if (projectStatus === "pendingVolunteers") {
-        await projectsDB.doc(projectId).update({projectStatus: "inProgress"})
-    } else if (projectStatus === "inProgress") {
-        await projectsDB.doc(projectId).update({projectStatus: "completed"})
-    } else { //completed
-        return res.send("This project is already completed. Cannot move up")
-    }
-    return res.send("moved project up")
-})
+// router.post("/moveUp", async (req, res) => {
+//     const {projectId} = req.body
+//     const projectData = await (await projectsDB.doc(projectId).get()).data()
+//     const projectStatus = projectData.projectStatus
+//     const projectManagerId = projectData.projectManagerId
+//     if (projectStatus === "pendingAdminApproval") {
+//         await projectsDB.doc(projectId).update({projectStatus: "listed"})
+//     } else if (projectStatus === "listed") {
+//         await projectsDB.doc(projectId).update({projectStatus: "pendingVolunteers"})
+//     } else if (projectStatus === "pendingVolunteers") {
+//         await projectsDB.doc(projectId).update({projectStatus: "inProgress"})
+//     } else if (projectStatus === "inProgress") {
+//         await projectsDB.doc(projectId).update({projectStatus: "completed"})
+//     } else { //completed
+//         return res.send("This project is already completed. Cannot move up")
+//     }
+//     return res.send("moved project up")
+// })
 
 
-router.post("/moveDown", async (req, res) => {
-    const {projectId} = req.body
-    const projectData = await (await projectsDB.doc(projectId).get()).data()
-    const projectStatus = projectData.projectStatus
-    const projectManagerId = projectData.projectManagerId
-    if (projectStatus === "pendingAdminApproval") {
-        return res.send("This project is already pending approval. Cannot move down")
-    } else if (projectStatus === "listed") {
-        await projectsDB.doc(projectId).update({projectStatus: "pendingAdminApproval"})
-    } else if (projectStatus === "pendingVolunteers") {
-        await projectsDB.doc(projectId).update({projectStatus: "listed"})
-    } else if (projectStatus === "inProgress") {
-        await projectsDB.doc(projectId).update({projectStatus: "pendingVolunteers"})
-    } else { //completed
-        await projectsDB.doc(projectId).update({projectStatus: "inProgress"})
-    }
-    return res.send("moved project down")
-})
+// router.post("/moveDown", async (req, res) => {
+//     const {projectId} = req.body
+//     const projectData = await (await projectsDB.doc(projectId).get()).data()
+//     const projectStatus = projectData.projectStatus
+//     const projectManagerId = projectData.projectManagerId
+//     if (projectStatus === "pendingAdminApproval") {
+//         return res.send("This project is already pending approval. Cannot move down")
+//     } else if (projectStatus === "listed") {
+//         await projectsDB.doc(projectId).update({projectStatus: "pendingAdminApproval"})
+//     } else if (projectStatus === "pendingVolunteers") {
+//         await projectsDB.doc(projectId).update({projectStatus: "listed"})
+//     } else if (projectStatus === "inProgress") {
+//         await projectsDB.doc(projectId).update({projectStatus: "pendingVolunteers"})
+//     } else { //completed
+//         await projectsDB.doc(projectId).update({projectStatus: "inProgress"})
+//     }
+//     return res.send("moved project down")
+// })
 
 
 
